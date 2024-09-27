@@ -1,18 +1,35 @@
 from flask import Flask, jsonify, request
 from datetime import datetime
 from util.index import get_flight_offers
-import random  # For demonstration purposes
+from util.cache import RedisCache
 
 app = Flask(__name__)
 
-@app.route('/')
-def hello_world():
-    return 'Hello, World!'
+"""
+Provides a simple health check endpoint for the application.
 
+This endpoint can be used to verify that the application is running and responding to requests.
+"""
 @app.route('/flights/ping')
 def ping():
     return jsonify({"data": "pong"})
 
+"""
+Retrieves the cheapest flight offer based on the provided origin, destination, travel date, number of passengers, and maximum number of results to return.
+
+Args:
+    origin (str): The origin airport code.
+    destination (str): The destination airport code.
+    date_str (str): The travel date in the format 'YYYY-MM-DD'.
+    number_of_passengers (int, optional): The number of passengers. Defaults to 1.
+    max_results (int, optional): The maximum number of results to return. Defaults to 1.
+
+Returns:
+    dict: A JSON response containing the flight offer data.
+
+Raises:
+    ValueError: If the provided date format is invalid.
+"""
 @app.route('/flights/price')
 def get_cheapest_flight():
     origin = request.args.get('origin')
@@ -33,5 +50,15 @@ def get_cheapest_flight():
 
 
     return jsonify(data)
+
+"""
+Initializes the Redis cache used by the application.
+    
+This function sets up the connection to the Redis server and initializes the RedisCache class, which provides a simple interface for interacting with the cache.
+"""
+def initialize_redis():
+    RedisCache.initialize()
+
 if __name__ == '__main__':
+    initialize_redis()
     app.run(debug=True)
