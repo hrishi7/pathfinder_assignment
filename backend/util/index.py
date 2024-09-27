@@ -1,9 +1,11 @@
+import os
 import requests
 from requests.auth import HTTPBasicAuth
+from util.token import get_amadeus_token
 
 def get_flight_offers(origin_location_code, destination_location_code, departure_date, number_of_passengers, max_result_count):
     # API endpoint
-    url = "https://test.api.amadeus.com/v2/shopping/flight-offers"
+    url = os.getenv('AMADEUS_FLIGHT_OFFERS_ENDPOINT');
 
     # Query parameters
     params = {
@@ -14,17 +16,7 @@ def get_flight_offers(origin_location_code, destination_location_code, departure
         "max": max_result_count
     }
 
-    # API credentials
-    api_key = "UZO9TntO7jvmdPydE3rC9fpBZDieIQUu"
-    api_secret = "OrGSeIzeeDgq36WV"
-
-    # Get access token
-    token_url = "https://test.api.amadeus.com/v1/security/oauth2/token"
-    token_data = {
-        "grant_type": "client_credentials"
-    }
-    token_response = requests.post(token_url, data=token_data, auth=HTTPBasicAuth(api_key, api_secret))
-    access_token = token_response.json()["access_token"]
+    access_token = get_amadeus_token();
 
     # Set up headers with access token
     headers = {
