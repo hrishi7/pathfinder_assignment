@@ -1,0 +1,64 @@
+<main class="main">
+  <div class="content">
+    <h1>Hello, {{ title }}</h1>
+    <p>Search Flight Prices</p>
+
+    <form [formGroup]="flightSearchForm">
+      <div class="row">
+        <mat-form-field class="col-4 mx-2">
+          <mat-label>From</mat-label>
+          <input
+            type="text"
+            placeholder="Pick origin"
+            aria-label="From"
+            matInput
+            [value]="flightSearchForm.get('from')!.value?.iataCode || ''"
+            [matAutocomplete]="autoFrom"
+          />
+          <mat-autocomplete #autoFrom="matAutocomplete" (optionSelected)="onFromOptionSelected('from', $event)">
+            @for (option of options; track option) {
+            <mat-option [value]="option">{{ option.iataCode }}</mat-option>
+            }
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <mat-form-field class="col-4">
+          <mat-label>To</mat-label>
+          <input
+            type="text"
+            placeholder="Pick destination"
+            aria-label="To"
+            matInput
+            [value]="flightSearchForm.get('to')!.value?.iataCode || ''"
+            [matAutocomplete]="autoTo"
+          />
+          <mat-autocomplete #autoTo="matAutocomplete" (optionSelected)="onFromOptionSelected('to', $event)">
+            @for (option of options; track option) {
+            <mat-option [value]="option">{{ option.iataCode }}</mat-option>
+            }
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <mat-form-field class="col-2">
+          <mat-label>Departure Date</mat-label>
+          <input
+            matInput
+            [matDatepicker]="picker"
+            formControlName="departureDate"
+          />
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field class="col-2">
+          <mat-label>Passengers</mat-label>
+          <input matInput type="number" formControlName="passengers" />
+        </mat-form-field>
+      </div>
+    </form>
+  </div>
+</main>
+<router-outlet />
