@@ -3,8 +3,10 @@ from datetime import datetime
 from util.index import get_flight_offers
 from dotenv import load_dotenv
 from util.cache import RedisCache
+from flask_cors import CORS 
 
 app = Flask(__name__)
+CORS(app) 
 
 load_dotenv();
 
@@ -29,7 +31,7 @@ def ping():
 # Raises:
 #     ValueError: If the provided date format is invalid.
 #
-@app.route('/flights/price')
+@app.route('/api/flights/price')
 def get_cheapest_flight():
     origin = request.args.get('origin')
     destination = request.args.get('destination')

@@ -1,64 +1,139 @@
 <main class="main">
-  <div class="content">
-    <h1>Hello, {{ title }}</h1>
+  <div class="content" style="max-width: 900px; margin: 0 auto; padding: 0 10px;">
+    <div style="display: flex; align-items: baseline; gap: 2;">
+      <h1>Hello, {{ title }}</h1>
+      <mat-icon style="font-size: 45px; height: 45px; width: 45px;">flight</mat-icon>
+    </div>
     <p>Search Flight Prices</p>
 
-    <form [formGroup]="flightSearchForm">
-      <div class="row">
-        <mat-form-field class="col-4 mx-2">
-          <mat-label>From</mat-label>
-          <input
-            type="text"
-            placeholder="Pick origin"
-            aria-label="From"
-            matInput
-            [value]="flightSearchForm.get('from')!.value?.iataCode || ''"
-            [matAutocomplete]="autoFrom"
-          />
-          <mat-autocomplete #autoFrom="matAutocomplete" (optionSelected)="onFromOptionSelected('from', $event)">
-            @for (option of options; track option) {
-            <mat-option [value]="option">{{ option.iataCode }}</mat-option>
-            }
-          </mat-autocomplete>
-        </mat-form-field>
+    <form [formGroup]="flightSearchForm" (ngSubmit)="searchFlightFare()" style="border: 2px solid #F8EDED; border-radius: 10px; padding: 20px; background-color: #F5F7F8; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+      <mat-grid-list cols="12" rowHeight="80px" gutterSize="8px">
+        <mat-grid-tile colspan="2">
+          <mat-form-field style="width: 100%;">
+            <mat-label>From</mat-label>
+            <input
+              type="text"
+              placeholder="Pick origin"
+              aria-label="From"
+              matInput
+              [matAutocomplete]="autoFrom"
+              required
+              [value]="flightSearchForm.get('from')?.value?.iataCode || ''"
+            />
+            <mat-error *ngIf="flightSearchForm.get('from')?.hasError('required')">required</mat-error>
+            <mat-autocomplete #autoFrom="matAutocomplete" (optionSelected)="onFromOptionSelected('from', $event)">
+              @for (option of options; track option) {
+              <mat-option [value]="option">{{ option.iataCode }}</mat-option>
+              }
+            </mat-autocomplete>
+          </mat-form-field>
+        </mat-grid-tile>
 
-        <mat-form-field class="col-4">
-          <mat-label>To</mat-label>
-          <input
-            type="text"
-            placeholder="Pick destination"
-            aria-label="To"
-            matInput
-            [value]="flightSearchForm.get('to')!.value?.iataCode || ''"
-            [matAutocomplete]="autoTo"
-          />
-          <mat-autocomplete #autoTo="matAutocomplete" (optionSelected)="onFromOptionSelected('to', $event)">
-            @for (option of options; track option) {
-            <mat-option [value]="option">{{ option.iataCode }}</mat-option>
-            }
-          </mat-autocomplete>
-        </mat-form-field>
+        <mat-grid-tile colspan="2">
+          <mat-form-field style="width: 100%;">
+            <mat-label>To</mat-label>
+            <input
+              type="text"
+              placeholder="Pick destination"
+              aria-label="To"
+              matInput
+              [matAutocomplete]="autoTo"
+              required
+              [value]="flightSearchForm.get('to')?.value?.iataCode || ''"
+            />
+            <mat-error *ngIf="flightSearchForm.get('to')?.hasError('required')">required</mat-error>
+            <mat-autocomplete #autoTo="matAutocomplete" (optionSelected)="onFromOptionSelected('to', $event)">
+              @for (option of options; track option) {
+              <mat-option [value]="option">{{ option.iataCode }}</mat-option>
+              }
+            </mat-autocomplete>
+          </mat-form-field>
+        </mat-grid-tile>
 
-        <mat-form-field class="col-2">
-          <mat-label>Departure Date</mat-label>
-          <input
-            matInput
-            [matDatepicker]="picker"
-            formControlName="departureDate"
-          />
-          <mat-datepicker-toggle
-            matSuffix
-            [for]="picker"
-          ></mat-datepicker-toggle>
-          <mat-datepicker #picker></mat-datepicker>
-        </mat-form-field>
+        <mat-grid-tile colspan="3">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Departure Date</mat-label>
+            <input
+              matInput
+              [matDatepicker]="picker"
+              formControlName="departureDate"
+              required
+            />
+            <mat-error *ngIf="flightSearchForm.get('departureDate')?.hasError('required')">required</mat-error>
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="picker"
+            ></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+        </mat-grid-tile>
 
-        <mat-form-field class="col-2">
-          <mat-label>Passengers</mat-label>
-          <input matInput type="number" formControlName="passengers" />
-        </mat-form-field>
-      </div>
+        <mat-grid-tile colspan="2">
+          <mat-form-field style="width: 100%;">
+            <mat-label>Passengers</mat-label>
+            <input matInput type="number" formControlName="passengers" />
+          </mat-form-field>
+        </mat-grid-tile>
+
+        <mat-grid-tile colspan="3" style="justify-content: space-between;">
+          <div style="display: flex; flex-direction: row; gap: 10px; height: 100%; align-items: center;">
+            <mat-divider vertical style="height: 100%; margin-right: 5px;"></mat-divider>
+            <button mat-mini-fab color="primary" type="submit" [disabled]="isLoading">
+              @if (isLoading) {
+                <mat-spinner diameter="24"></mat-spinner>
+              } @else {
+                <mat-icon>search</mat-icon>
+              }
+            </button>
+            <button mat-flat-button color="accent" type="button" (click)="clearFlightSearchForm()" [disabled]="isLoading">Clear</button>
+          </div>
+        </mat-grid-tile>
+        <mat-grid-tile colspan="12">
+          <mat-slide-toggle formControlName="no_cache">
+            <div style="color: black;">Use cache</div>
+          </mat-slide-toggle>
+        </mat-grid-tile>
+      </mat-grid-list>
     </form>
+
+    <div *ngIf="!response || response.length === 0" class="no-data-message">
+      <mat-card>
+        <mat-card-content>
+          <p>No Data Found</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Add this after the form element -->
+<div class="flight-results" *ngIf="response && response.length > 0">
+  <mat-card *ngFor="let offer of response" class="flight-card">
+    <mat-card-header>
+      <mat-card-title>Flight Details</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <p>
+        <strong>Aircraft:</strong> {{ offer.itineraries[0].segments[0].carrierCode }} {{ offer.itineraries[0].segments[0].aircraft.code }} 
+      </p>
+      <p>
+        <strong>Stops:</strong> 
+        {{ offer.itineraries[0].segments[0].numberOfStops === 0 ? 'Non-stop' : offer.itineraries[0].segments[0].numberOfStops + ' stop(s)' }}
+      </p>
+      <p><strong>Flight Number:</strong> {{ offer.itineraries[0].segments[0].number }}</p>
+      <p>
+        <strong>Duration:</strong> 
+        {{ calculateDuration(offer.itineraries[0].segments[0].departure.at, offer.itineraries[0].segments[0].arrival.at) }}
+      </p>
+      <p>
+        <strong>Route:</strong> 
+        {{ offer.itineraries[0].segments[0].departure.iataCode }} to {{ offer.itineraries[0].segments[0].arrival.iataCode }}
+      </p>
+    </mat-card-content>
+    <mat-card-actions>
+      <p class="price"><strong>Price:</strong> €{{ offer.price.total }}</p>
+    </mat-card-actions>
+  </mat-card>
+</div>
+
   </div>
 </main>
 <router-outlet />

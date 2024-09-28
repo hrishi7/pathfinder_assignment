@@ -8,3 +8,34 @@
     width: 100%;
   }
   
+  .flight-results {
+    margin-top: 20px;
+    background-color: #F5F7F8;
+  }
+  
+  .flight-card {
+    margin-bottom: 20px;
+    background: #F5F7F8;
+  }
+  
+  .price {
+    font-size: 1.2em;
+    color: #1976d2;
+  }
+
+  .no-data-message {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .no-data-message mat-card {
+    display: inline-block;
+    padding: 20px;
+  }
+  
+  .no-data-message p {
+    font-size: 18px;
+    color: #888;
+  }
+  
+  
