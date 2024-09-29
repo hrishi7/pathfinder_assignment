@@ -2,7 +2,7 @@
 
 • Install docker and docker compose and angular cli, Node.js
 
-• clone repository from https://github.com/hrishi7/pathfinder_assignment
+• clone repository from https://github.com/hrishi7/pathfndr_assignment
 
 • Move to the cloned folder where you can see two sub folders named flight-checker and backend
 
