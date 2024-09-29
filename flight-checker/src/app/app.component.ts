@@ -7,7 +7,7 @@ import {
 } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
-import { NgIf,NgFor } from '@angular/common';
+import { NgIf,NgFor,DatePipe } from '@angular/common';
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -27,7 +27,7 @@ import {FlightService} from '../services/flightService'
 @Component({
   selector: 'app-root',
   standalone: true,
-  providers: [provideNativeDateAdapter(), FlightService],
+  providers: [provideNativeDateAdapter(), FlightService, DatePipe],
   imports: [
     NgIf,
     NgFor,
@@ -65,7 +65,30 @@ export class AppComponent implements OnInit {
     { airportName: string; iataCode: string; city: string }[]
   >;
   isLoading: boolean = false;
-  response =[]
+  response = [] as Array<{
+    itineraries: Array<{
+      segments: Array<{
+        carrierCode: string;
+        aircraft: {
+          code: string;
+        };
+        numberOfStops: number;
+        number: string;
+        departure: {
+          at: string;
+          iataCode: string;
+        };
+        arrival: {
+          at: string;
+          iataCode: string;
+        };
+      }>;
+    }>;
+    price: {
+      total: string;
+    };
+  }
+  >
 
   constructor(private formBuilder: FormBuilder, private flightService: FlightService) {}
 
@@ -95,6 +118,8 @@ export class AppComponent implements OnInit {
     const selectedOption = event.option.value;
     this.flightSearchForm.get(field)!.setValue(selectedOption);
   }
+
+  
 
   searchFlightFare() {
     if (this.flightSearchForm.valid) {
@@ -136,6 +161,24 @@ export class AppComponent implements OnInit {
     const minutes = Math.floor((durationMs % (1000 * 60 * 60)) / (1000 * 60));
     return `${hours}h ${minutes}m`;
   }
+
+  formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const month = months[date.getMonth()];
+    const day = date.getDate();
+    const year = date.getFullYear();
+    let hours = date.getHours();
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    const formattedHours = hours.toString().padStart(2, '0');
+    
+    return `${month} ${day}, ${year} ${formattedHours}:${minutes} ${ampm}`;
+  }
+  
+  
 
 
   clearFlightSearchForm() {

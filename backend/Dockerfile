@@ -1,7 +1,10 @@
-from python:3.11.0a6-alpine3.15
+FROM python:3.8-slim-buster
+
 WORKDIR /app
-COPY requirements.txt /app
-RUN pip install -r requirements.txt --no-cache-dir
-EXPOSE 5000
-COPY . /app
-CMD python main.py
+
+COPY requirements.txt requirements.txt
+RUN pip install -r requirements.txt
+
+COPY . .
+
+CMD [ "python", "main.py" ]

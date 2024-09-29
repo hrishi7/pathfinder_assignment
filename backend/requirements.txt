@@ -1,4 +1,6 @@
-flask
-redis
-requests
-async-timeout
+flask==2.0.1
+redis==3.5.3
+requests==2.32.3
+werkzeug==2.0.1
+python-dotenv==1.0.1
+flask-cors==5.0.0

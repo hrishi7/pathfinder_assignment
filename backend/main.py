@@ -55,4 +55,4 @@ def get_cheapest_flight():
 
 if __name__ == '__main__':
     RedisCache.initialize()
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=int("1025"), debug=True)

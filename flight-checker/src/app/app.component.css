@@ -38,4 +38,12 @@
     color: #888;
   }
   
+  .flight-times {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 10px;
+  }
   
+  .flight-times p {
+    margin: 0;
+  }

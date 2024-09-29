@@ -28,7 +28,7 @@ class RedisCache:
     # - `get_instance`: Returns the Redis client instance.
    
     @classmethod
-    def initialize(cls, host='localhost', port=6379, db=0):
+    def initialize(cls, host='redis', port=6379, db=0):
         if cls._instance is None:
             cls._instance = cls.__new__(cls)
         cls._instance.client = redis.Redis(host=host, port=port, db=db)
